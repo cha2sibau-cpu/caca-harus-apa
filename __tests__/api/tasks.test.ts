@@ -1,3 +1,5 @@
+/** @jest-environment node */
+
 const mockTask = {
   id: '1',
   title: 'Test',
