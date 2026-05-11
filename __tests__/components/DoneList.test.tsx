@@ -54,4 +54,9 @@ describe('DoneList', () => {
     fireEvent.click(btn)
     expect(onDelete).toHaveBeenCalledWith('1')
   })
+
+  it('renders task title with strikethrough styling', () => {
+    render(<DoneList tasks={[makeTask()]} onToggle={jest.fn()} onDelete={jest.fn()} />)
+    expect(screen.getByText('Buy groceries')).toHaveClass('line-through')
+  })
 })

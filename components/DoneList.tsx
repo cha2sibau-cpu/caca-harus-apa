@@ -31,7 +31,7 @@ export default function DoneList({ tasks, onToggle, onDelete }: DoneListProps) {
         >
           <input
             type="checkbox"
-            checked={true}
+            checked={task.completed}
             onChange={() => onToggle(task.id, false)}
             className="mt-0.5 shrink-0 accent-gray-400 cursor-pointer"
             aria-label={`Mark "${task.title}" as incomplete`}
