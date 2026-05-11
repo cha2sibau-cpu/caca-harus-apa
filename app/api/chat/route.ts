@@ -3,6 +3,8 @@ import Anthropic from '@anthropic-ai/sdk'
 import { supabase } from '@/lib/supabase'
 import type { Message, AIResponse } from '@/lib/types'
 
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+
 const SYSTEM_PROMPT = `You are a task prioritization assistant. The user will describe tasks in natural language.
 Return ONLY valid JSON — no markdown, no extra text — in this exact shape:
 {
@@ -50,8 +52,6 @@ export async function POST(request: Request) {
     { role: 'user', content: message.trim() },
   ]
 
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
-
   let parsed: AIResponse
   try {
     const response = await anthropic.messages.create({
@@ -68,20 +68,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `AI request failed: ${msg}` }, { status: 502 })
   }
 
-  if (!Array.isArray(parsed.tasks)) {
+  if (!Array.isArray(parsed.tasks) || typeof parsed.message !== 'string') {
     return NextResponse.json({ error: 'Invalid AI response format' }, { status: 502 })
   }
 
-  const insertedTasks = await Promise.all(
-    parsed.tasks.map(async t => {
-      const { data } = await supabase
-        .from('tasks')
-        .insert({ title: t.title, description: t.description, quadrant: t.quadrant })
-        .select()
-        .single()
-      return data
-    })
-  )
+  let insertedTasks
+  try {
+    insertedTasks = await Promise.all(
+      parsed.tasks.map(async t => {
+        const { data, error } = await supabase
+          .from('tasks')
+          .insert({ title: t.title, description: t.description, quadrant: t.quadrant })
+          .select()
+          .single()
+        if (error) throw new Error(error.message)
+        return data
+      })
+    )
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Unknown error'
+    return NextResponse.json({ error: `Failed to save tasks: ${msg}` }, { status: 500 })
+  }
 
   return NextResponse.json({ tasks: insertedTasks, message: parsed.message })
 }
