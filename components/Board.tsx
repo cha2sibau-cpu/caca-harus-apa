@@ -41,8 +41,10 @@ export default function Board() {
       <header className="px-4 py-3 border-b border-gray-100">
         <div className="flex items-center justify-between">
           <h1 className="text-base font-semibold text-gray-800">Eisenhower Board</h1>
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+          <div role="tablist" aria-label="View" className="flex gap-1 bg-gray-100 rounded-lg p-1">
             <button
+              role="tab"
+              aria-selected={activeTab === 'board'}
               onClick={() => setActiveTab('board')}
               className={`px-3 py-1 text-sm rounded-md font-medium transition-colors ${
                 activeTab === 'board'
@@ -53,6 +55,8 @@ export default function Board() {
               Board
             </button>
             <button
+              role="tab"
+              aria-selected={activeTab === 'done'}
               onClick={() => setActiveTab('done')}
               className={`px-3 py-1 text-sm rounded-md font-medium transition-colors ${
                 activeTab === 'done'

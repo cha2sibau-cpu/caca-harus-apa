@@ -27,15 +27,15 @@ describe('Board', () => {
   it('shows Board and Done tabs', async () => {
     render(<Board />)
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /^board$/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /done/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /^board$/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /done/i })).toBeInTheDocument()
     })
   })
 
   it('Done tab label shows count of completed tasks', async () => {
     render(<Board />)
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /done \(1\)/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /done \(1\)/i })).toBeInTheDocument()
     })
   })
 
@@ -65,15 +65,15 @@ describe('Board', () => {
 
   it('switching to Done tab shows completed tasks', async () => {
     render(<Board />)
-    await waitFor(() => screen.getByRole('button', { name: /done/i }))
-    fireEvent.click(screen.getByRole('button', { name: /done/i }))
-    expect(screen.getByText('Buy groceries')).toBeInTheDocument()
+    await waitFor(() => screen.getByRole('tab', { name: /done \(1\)/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /done/i }))
+    await waitFor(() => expect(screen.getByText('Buy groceries')).toBeInTheDocument())
   })
 
   it('switching to Done tab hides quadrants', async () => {
     render(<Board />)
-    await waitFor(() => screen.getByRole('button', { name: /done/i }))
-    fireEvent.click(screen.getByRole('button', { name: /done/i }))
-    expect(screen.queryByText(/DO FIRST/i)).not.toBeInTheDocument()
+    await waitFor(() => screen.getByRole('tab', { name: /done \(1\)/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /done/i }))
+    await waitFor(() => expect(screen.queryByText(/DO FIRST/i)).not.toBeInTheDocument())
   })
 })
