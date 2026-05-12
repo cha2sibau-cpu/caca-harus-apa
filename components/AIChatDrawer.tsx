@@ -145,7 +145,7 @@ export default function AIChatDrawer({ onTasksAdded }: AIChatDrawerProps) {
               value={input}
               onChange={e => setInput(e.target.value)}
               disabled={!contextReady || loading}
-              className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
+              className="flex-1 text-sm text-gray-900 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
               placeholder={contextReady ? 'Describe your tasks...' : 'Save your context first'}
             />
             <button type="submit" disabled={!contextReady || !input.trim() || loading} className="bg-blue-600 text-white text-sm rounded-lg px-4 py-2 font-medium hover:bg-blue-700 disabled:opacity-50">
